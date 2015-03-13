@@ -8,10 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class HistoryFragment extends Fragment {
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class PendingListFragment extends Fragment {
 
 
-    public HistoryFragment() {
+    public PendingListFragment() {
         // Required empty public constructor
     }
 
@@ -20,13 +24,13 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_history, container, false);
+        return inflater.inflate(R.layout.fragment_pending_list, container, false);
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(2);
+        ((MainActivity) activity).onSectionAttached(1);
     }
 
 

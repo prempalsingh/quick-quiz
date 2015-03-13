@@ -42,12 +42,12 @@ public class MainActivity extends ActionBarActivity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch(position){
-            case 1 : fragmentManager.beginTransaction()
+            case 2 : fragmentManager.beginTransaction()
                     .replace(R.id.container, new HistoryFragment())
                     .commit();
                     break;
-            case 2 : fragmentManager.beginTransaction()
-                    .replace(R.id.container, new HistoryFragment())
+            case 1 : fragmentManager.beginTransaction()
+                    .replace(R.id.container, new PendingListFragment())
                     .commit();
                 break;
         }
