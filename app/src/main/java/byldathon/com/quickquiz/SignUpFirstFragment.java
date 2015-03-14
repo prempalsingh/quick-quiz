@@ -43,6 +43,7 @@ public class SignUpFirstFragment extends Fragment {
                 user.setUsername(username.getText().toString());
                 user.setPassword(password.getText().toString());
                 user.setEmail(username.getText().toString());
+                user.put("Channel", channel.getText().toString());
                 user.signUpInBackground(new SignUpCallback() {
                     public void done(ParseException e) {
                         if (e == null) {

@@ -30,16 +30,17 @@
         android:text="Sign in"
         android:id="@+id/sign_in"
         android:layout_below="@+id/password"
-        android:layout_alignLeft="@+id/password"
-        android:layout_alignStart="@+id/password"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="65dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="Sign Up"
         android:id="@+id/signup"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/password"
-        android:layout_alignEnd="@+id/password" />
+        android:textColorLink="@color/material_deep_teal_500"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        />
 </RelativeLayout>

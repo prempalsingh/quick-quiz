@@ -10,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class HistoryFragment extends Fragment {
 
 
     private RecyclerView historyView;
+    private ProgressBar progressBar;
     View v;
 
     public HistoryFragment() {
@@ -48,12 +51,17 @@ public class HistoryFragment extends Fragment {
         final ArrayList<String> completed = new ArrayList<>();
         ParseQuery<ParseObject> parseQuery = new ParseQuery<ParseObject>("Assignment");
         final ArrayList<ParseObject> newList = new ArrayList<>();
+        progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
         parseQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
+                progressBar.setVisibility(View.GONE);
                 for(int i = 0; i < parseObjects.size(); i++){
                     if(completed.contains(parseObjects.get(i).getString("Name"))){
-                        newList.add(parseObjects.get(i));
+                        if(parseObjects.get(i).getString("Channel").equals(ParseUser.getCurrentUser().getString("Channel"))) {
+                            newList.add(parseObjects.get(i));
+                        }
                     }
                     Adapter adapter = new Adapter(newList);
                     historyView.setAdapter(adapter);
@@ -84,8 +92,6 @@ public class HistoryFragment extends Fragment {
 
             holder.name.setText(parseObjects.get(position).getString("Name"));
             holder.subject.setText(parseObjects.get(position).getString("Subject"));
-            holder.time.setText(parseObjects.get(position).getString("Time"));
-            holder.number.setText(parseObjects.get(position).getString("Number"));
         }
 
         @Override

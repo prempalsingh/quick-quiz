@@ -2,6 +2,7 @@ package byldathon.com.quickquiz;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -31,6 +34,7 @@ import java.util.List;
 public class PendingListFragment extends Fragment {
 
     private RecyclerView pendingListView;
+    private ProgressBar progressBar;
     View v;
 
     public PendingListFragment() {
@@ -49,6 +53,8 @@ public class PendingListFragment extends Fragment {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_pending_list, container, false);
         pendingListView = (RecyclerView)v.findViewById(R.id.pendingListView);
+        progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         pendingListView.setLayoutManager(layoutManager);
 
@@ -61,9 +67,12 @@ public class PendingListFragment extends Fragment {
         parseQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
+                progressBar.setVisibility(View.GONE);
                 for(int i = 0; i < parseObjects.size(); i++){
                     if(!completed.contains(parseObjects.get(i).getString("Name"))){
-                        newList.add(parseObjects.get(i));
+                        if(parseObjects.get(i).getString("Channel").equals(ParseUser.getCurrentUser().getString("Channel"))) {
+                            newList.add(parseObjects.get(i));
+                        }
                     }
                     Adapter adapter = new Adapter(newList);
                     pendingListView.setAdapter(adapter);
@@ -94,8 +103,6 @@ public class PendingListFragment extends Fragment {
 
             holder.name.setText(parseObjects.get(position).getString("Name"));
             holder.subject.setText(parseObjects.get(position).getString("Subject"));
-            holder.time.setText(parseObjects.get(position).getString("Time"));
-            holder.number.setText(parseObjects.get(position).getString("Number"));
         }
 
         @Override
