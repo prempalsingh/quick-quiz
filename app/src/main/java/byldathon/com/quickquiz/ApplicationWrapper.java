@@ -10,8 +10,6 @@ import com.parse.ParseUser;
  * Created by prempal on 14/3/15.
  */
 public class ApplicationWrapper extends Application {
-    public static final boolean LOG_DEBUG = true;
-    public static final boolean LOG_INFO = true;
 
     @Override
     public void onCreate() {

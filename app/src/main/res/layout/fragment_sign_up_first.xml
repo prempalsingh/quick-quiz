@@ -1,8 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" tools:context="byldathon.com.quickquiz.SignUpFragment"
-    android:id="@+id/signup_fragment">
+    tools:context="byldathon.com.quickquiz.SignUpFirstFragment">
 
     <EditText
         android:layout_width="wrap_content"
@@ -20,26 +19,29 @@
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/password"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/emailID"
         android:layout_alignLeft="@+id/emailID"
-        android:layout_alignStart="@+id/emailID" />
+        android:layout_alignStart="@+id/emailID"
+        android:layout_marginTop="69dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign in"
-        android:id="@+id/sign_in"
+        android:text="Sign up"
+        android:id="@+id/sign_up"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="77dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/channel"
         android:layout_below="@+id/password"
         android:layout_alignLeft="@+id/password"
         android:layout_alignStart="@+id/password"
-        android:layout_marginTop="65dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/signup"
-        android:layout_alignParentBottom="true"
+        android:layout_marginTop="45dp"
         android:layout_alignRight="@+id/password"
         android:layout_alignEnd="@+id/password" />
+
 </RelativeLayout>
