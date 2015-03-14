@@ -3,23 +3,23 @@ package byldathon.com.quickquiz;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 
@@ -27,12 +27,15 @@ public class TakeQuizActivity extends Activity {
     private ArrayList<String> questionsArrayList, answersArrayList;
     private ArrayAdapter<String> arrayAdapter;
     private RelativeLayout takeQuizBackGround;
-    private int i;
+    private TextView countDownTextView, scoreTextView;
 
     SwipeFlingAdapterView flingContainer;
 
     public static int totalNoOfQuestions = 0;
     public static int score = 0;
+    private static int DELAY = 250;
+
+    private String mJson;
 
 
     @Override
@@ -40,26 +43,30 @@ public class TakeQuizActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_quiz);
 
+        Intent intent = getIntent();
+        mJson = intent.getStringExtra("JSON");
 
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
-        takeQuizBackGround = (RelativeLayout) findViewById(R.id.take_quiz_layout);
+        scoreTextView = (TextView) findViewById(R.id.score);
+        scoreTextView.setText(""+score);
+        countDownTextView = (TextView) findViewById(R.id.countdown);
         Button rightButton = (Button) findViewById(R.id.right);
         Button leftButton = (Button) findViewById(R.id.left);
 
         questionsArrayList = new ArrayList<>();
         answersArrayList = new ArrayList<>();
+        new LongOperation().execute("");
         try {
 
-            JSONObject object = new JSONObject(loadJSONFromAsset());
-            JSONArray jsonArray = object.getJSONArray("Quiz");
+            JSONArray jsonArray = new JSONArray(mJson);
             int i = 0;
             totalNoOfQuestions = jsonArray.length();
 //            questionsArrayList.add("Let's Begin!");
 //            answersArrayList.add("Yo");
             while(i < jsonArray.length()) {
-                String question = jsonArray.getJSONObject(i).getString("question");
+                String question = jsonArray.getJSONObject(i).getString("Question");
                 questionsArrayList.add(question);
-                String answer = jsonArray.getJSONObject(i).getString("answer");
+                String answer = jsonArray.getJSONObject(i).getString("Answer");
                 answersArrayList.add(answer);
                 i++;
             }
@@ -69,6 +76,20 @@ public class TakeQuizActivity extends Activity {
         }
 
 
+//        new CountDownTimer(3000,1000) {//CountDownTimer(edittext1.getText()+edittext2.getText()) also parse it to long
+//
+//            public void onTick(long millisUntilFinished) {
+//                countDownTextView.setText("seconds remaining: " + millisUntilFinished / 1000);
+//                //here you can have your logic to set text to edittext
+//            }
+//
+//            public void onFinish() {
+//                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                intent.putExtra("Score", score);
+//                intent.putExtra("TotalQuestions", totalNoOfQuestions);
+//                startActivity(intent);
+//            }
+//        } .start();
 
         arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.helloText, questionsArrayList);
 
@@ -92,10 +113,10 @@ public class TakeQuizActivity extends Activity {
             @Override
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
-               Log.d("LIST", "removed object!");
-               questionsArrayList.get(0);
-               answersArrayList.get(0);
-               arrayAdapter.notifyDataSetChanged();
+                Log.d("LIST", "removed object!");
+                questionsArrayList.get(0);
+                answersArrayList.get(0);
+                arrayAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -113,17 +134,36 @@ public class TakeQuizActivity extends Activity {
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
                     score++;
-                    Toast.makeText(getApplicationContext(), "Correct", Toast.LENGTH_SHORT).show();
+                    scoreTextView.setText(""+score);
+                    flingContainer.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+
+                    Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            flingContainer.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                        }
+                    }, DELAY);
+                    //Toast.makeText(getApplicationContext(), "Correct", Toast.LENGTH_SHORT).show();
 //                    Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Incorrect!", Toast.LENGTH_SHORT).show();
-                  //  Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
+                    //Toast.makeText(getApplicationContext(), "Incorrect!", Toast.LENGTH_SHORT).show();
+                    //  Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
                     Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     vibrator.vibrate(250);
-                    takeQuizBackGround.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+
+                    flingContainer.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                    Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            flingContainer.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                        }
+                    }, DELAY);
+
                 }
 
             }
@@ -140,17 +180,36 @@ public class TakeQuizActivity extends Activity {
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
                     score++;
-                    Toast.makeText(getApplicationContext(), "Correct", Toast.LENGTH_SHORT).show();
-                  //  Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
+                    scoreTextView.setText(""+score);
+                    flingContainer.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+
+                    Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            flingContainer.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                        }
+                    }, DELAY);
+                    //Toast.makeText(getApplicationContext(), "Correct", Toast.LENGTH_SHORT).show();
+                    //  Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Incorrect!", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getApplicationContext(), "Incorrect!", Toast.LENGTH_SHORT).show();
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
-                   // Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
+                    // Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
                     Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     vibrator.vibrate(250);
-                    takeQuizBackGround.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+                    int DELAY = 250;
+                    flingContainer.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                    Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            flingContainer.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                        }
+                    }, DELAY);
+
                 }
             }
 
@@ -160,7 +219,7 @@ public class TakeQuizActivity extends Activity {
 
                 questionsArrayList.add("End of Quiz. Thanks for taking the Quiz.");
                 answersArrayList.add("Yo!");
-                Toast.makeText(getApplicationContext(), ""+score, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), ""+score, Toast.LENGTH_LONG).show();
                 arrayAdapter.notifyDataSetChanged();
                 Log.d("LIST", "notified");
 
@@ -187,31 +246,48 @@ public class TakeQuizActivity extends Activity {
         });
 
     }
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
+    private class LongOperation extends AsyncTask<String, Void, String> {
 
-            InputStream is = getApplicationContext().getAssets().open("quiz.json");
-
-            int size = is.available();
-
-            byte[] buffer = new byte[size];
-
-            is.read(buffer);
-
-            is.close();
-
-            json = new String(buffer, "UTF-8");
+        Handler h;
+        int DELAY = 3000;
+        @Override
+        protected String doInBackground(String... params) {
 
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
+
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                    intent.putExtra("Score", score);
+//                    intent.putExtra("TotalQuestions", totalNoOfQuestions);
+//                    startActivity(intent);
+
+                }
+            }, DELAY);
+
+
+
+            return "Executed";
         }
-        return json;
 
+        @Override
+        protected void onPostExecute(String result) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("Score", score);
+            intent.putExtra("TotalQuestions", totalNoOfQuestions);
+            startActivity(intent);
+            // might want to change "executed" for the returned string passed
+            // into onPostExecute() but that is upto you
+        }
+
+        @Override
+        protected void onPreExecute() {
+            h = new Handler();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
-
-
 
 }

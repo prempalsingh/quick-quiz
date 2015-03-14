@@ -9,6 +9,7 @@
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/emailID"
+        android:hint="Email Id"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="115dp" />
@@ -17,6 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
+        android:hint="password"
         android:ems="10"
         android:id="@+id/password"
         android:layout_below="@+id/emailID"
