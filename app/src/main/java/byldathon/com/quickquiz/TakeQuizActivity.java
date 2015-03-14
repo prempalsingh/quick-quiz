@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
@@ -26,13 +28,15 @@ import java.util.ArrayList;
 public class TakeQuizActivity extends Activity {
     private ArrayList<String> questionsArrayList, answersArrayList;
     private ArrayAdapter<String> arrayAdapter;
-    private RelativeLayout takeQuizBackGround;
+    private TextView countDownTextView, scoreTextView;
+    public RelativeLayout takeQuizBackGround;
     private int i;
 
     SwipeFlingAdapterView flingContainer;
 
     public static int totalNoOfQuestions = 0;
     public static int score = 0;
+    private static int DELAY = 250;
 
 
     @Override
@@ -42,7 +46,9 @@ public class TakeQuizActivity extends Activity {
 
 
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
-        takeQuizBackGround = (RelativeLayout) findViewById(R.id.take_quiz_layout);
+        scoreTextView = (TextView) findViewById(R.id.score);
+        scoreTextView.setText(""+score);
+        countDownTextView = (TextView) findViewById(R.id.countdown);
         Button rightButton = (Button) findViewById(R.id.right);
         Button leftButton = (Button) findViewById(R.id.left);
 
@@ -69,6 +75,20 @@ public class TakeQuizActivity extends Activity {
         }
 
 
+//        new CountDownTimer(3000,1000) {//CountDownTimer(edittext1.getText()+edittext2.getText()) also parse it to long
+//
+//            public void onTick(long millisUntilFinished) {
+//                countDownTextView.setText("seconds remaining: " + millisUntilFinished / 1000);
+//                //here you can have your logic to set text to edittext
+//            }
+//
+//            public void onFinish() {
+//                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                intent.putExtra("Score", score);
+//                intent.putExtra("TotalQuestions", totalNoOfQuestions);
+//                startActivity(intent);
+//            }
+//        } .start();
 
         arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.helloText, questionsArrayList);
 
@@ -92,10 +112,10 @@ public class TakeQuizActivity extends Activity {
             @Override
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
-               Log.d("LIST", "removed object!");
-               questionsArrayList.get(0);
-               answersArrayList.get(0);
-               arrayAdapter.notifyDataSetChanged();
+                Log.d("LIST", "removed object!");
+                questionsArrayList.get(0);
+                answersArrayList.get(0);
+                arrayAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -113,17 +133,36 @@ public class TakeQuizActivity extends Activity {
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
                     score++;
-                    Toast.makeText(getApplicationContext(), "Correct", Toast.LENGTH_SHORT).show();
+                    scoreTextView.setText(""+score);
+                    flingContainer.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+
+                    Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            flingContainer.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                        }
+                    }, DELAY);
+                    //Toast.makeText(getApplicationContext(), "Correct", Toast.LENGTH_SHORT).show();
 //                    Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Incorrect!", Toast.LENGTH_SHORT).show();
-                  //  Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
+                    //Toast.makeText(getApplicationContext(), "Incorrect!", Toast.LENGTH_SHORT).show();
+                    //  Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
                     Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     vibrator.vibrate(250);
-                    takeQuizBackGround.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+
+                    flingContainer.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                    Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            flingContainer.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                        }
+                    }, DELAY);
+
                 }
 
             }
@@ -140,17 +179,36 @@ public class TakeQuizActivity extends Activity {
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
                     score++;
-                    Toast.makeText(getApplicationContext(), "Correct", Toast.LENGTH_SHORT).show();
-                  //  Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
+                    scoreTextView.setText(""+score);
+                    flingContainer.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+
+                    Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            flingContainer.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                        }
+                    }, DELAY);
+                    //Toast.makeText(getApplicationContext(), "Correct", Toast.LENGTH_SHORT).show();
+                    //  Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Incorrect!", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getApplicationContext(), "Incorrect!", Toast.LENGTH_SHORT).show();
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
-                   // Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
+                    // Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
                     Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     vibrator.vibrate(250);
-                    takeQuizBackGround.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+                    int DELAY = 250;
+                    flingContainer.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                    Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            flingContainer.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+                        }
+                    }, DELAY);
+
                 }
             }
 
@@ -160,7 +218,7 @@ public class TakeQuizActivity extends Activity {
 
                 questionsArrayList.add("End of Quiz. Thanks for taking the Quiz.");
                 answersArrayList.add("Yo!");
-                Toast.makeText(getApplicationContext(), ""+score, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), ""+score, Toast.LENGTH_LONG).show();
                 arrayAdapter.notifyDataSetChanged();
                 Log.d("LIST", "notified");
 
