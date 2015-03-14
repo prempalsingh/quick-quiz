@@ -42,23 +42,23 @@ public class MainActivity extends ActionBarActivity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch(position){
-            case 2 : fragmentManager.beginTransaction()
-                    .replace(R.id.container, new HistoryFragment())
-                    .commit();
-                    break;
-            case 1 : fragmentManager.beginTransaction()
+            case 0 : fragmentManager.beginTransaction()
                     .replace(R.id.container, new PendingListFragment())
                     .commit();
                 break;
+            case 1 : fragmentManager.beginTransaction()
+                    .replace(R.id.container, new HistoryFragment())
+                    .commit();
+                    break;
         }
     }
 
     public void onSectionAttached(int number) {
         switch (number) {
-            case 1:
+            case 0:
                 mTitle = getString(R.string.title_section1);
                 break;
-            case 2:
+            case 1:
                 mTitle = getString(R.string.title_section2);
                 break;
         }
