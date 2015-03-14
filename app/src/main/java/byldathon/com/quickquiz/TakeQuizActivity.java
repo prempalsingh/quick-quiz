@@ -3,7 +3,6 @@ package byldathon.com.quickquiz;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -45,6 +44,7 @@ public class TakeQuizActivity extends Activity {
 
         Intent intent = getIntent();
         mJson = intent.getStringExtra("JSON");
+        Log.d("sdg",mJson);
 
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
         scoreTextView = (TextView) findViewById(R.id.score);
@@ -55,7 +55,7 @@ public class TakeQuizActivity extends Activity {
 
         questionsArrayList = new ArrayList<>();
         answersArrayList = new ArrayList<>();
-        new LongOperation().execute("");
+//        new LongOperation().execute("");
         try {
 
             JSONArray jsonArray = new JSONArray(mJson);
@@ -130,11 +130,13 @@ public class TakeQuizActivity extends Activity {
                     intent.putExtra("TotalQuestions", totalNoOfQuestions);
                     startActivity(intent);
                 }
-                if(answersArrayList.get(0).equals("false")) {
+                if(answersArrayList.get(0).equals("0")) {
+                    Log.d("Raghav ", ""+questionsArrayList.get(0)+" "+answersArrayList.get(0));
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
                     score++;
                     scoreTextView.setText(""+score);
+                   // Log.d("Raghav ", ""+questionsArrayList+" "+answersArrayList.get(0));
                     flingContainer.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
 
                     Handler h = new Handler();
@@ -149,7 +151,8 @@ public class TakeQuizActivity extends Activity {
                 }
                 else {
                     //Toast.makeText(getApplicationContext(), "Incorrect!", Toast.LENGTH_SHORT).show();
-                    //  Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
+                    //  Log.d("Raghav", answersArrayList.get(0) + " " +
+                    Log.d("Raghav ", ""+questionsArrayList.get(0)+" "+answersArrayList.get(0));
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
                     Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -176,7 +179,8 @@ public class TakeQuizActivity extends Activity {
                     intent.putExtra("TotalQuestions", totalNoOfQuestions);
                     startActivity(intent);
                 }
-                if(answersArrayList.get(0).equals("true")) {
+                if(answersArrayList.get(0).equals("1")) {
+                    Log.d("Raghav ", ""+questionsArrayList.get(0)+" "+answersArrayList.get(0));
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
                     score++;
@@ -195,6 +199,7 @@ public class TakeQuizActivity extends Activity {
                 }
                 else {
                     // Toast.makeText(getApplicationContext(), "Incorrect!", Toast.LENGTH_SHORT).show();
+                    Log.d("Raghav ", ""+questionsArrayList.get(0)+" "+answersArrayList.get(0));
                     questionsArrayList.remove(0);
                     answersArrayList.remove(0);
                     // Log.d("Raghav", answersArrayList.get(0) + " " + questionsArrayList.get(0));
@@ -245,49 +250,6 @@ public class TakeQuizActivity extends Activity {
             }
         });
 
-    }
-    private class LongOperation extends AsyncTask<String, Void, String> {
-
-        Handler h;
-        int DELAY = 3000;
-        @Override
-        protected String doInBackground(String... params) {
-
-
-
-            h.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                    intent.putExtra("Score", score);
-//                    intent.putExtra("TotalQuestions", totalNoOfQuestions);
-//                    startActivity(intent);
-
-                }
-            }, DELAY);
-
-
-
-            return "Executed";
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.putExtra("Score", score);
-            intent.putExtra("TotalQuestions", totalNoOfQuestions);
-            startActivity(intent);
-            // might want to change "executed" for the returned string passed
-            // into onPostExecute() but that is upto you
-        }
-
-        @Override
-        protected void onPreExecute() {
-            h = new Handler();
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {}
     }
 
 }
