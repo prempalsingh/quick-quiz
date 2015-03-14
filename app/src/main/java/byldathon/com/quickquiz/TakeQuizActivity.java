@@ -3,6 +3,7 @@ package byldathon.com.quickquiz;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -45,6 +46,7 @@ public class TakeQuizActivity extends Activity {
         setContentView(R.layout.activity_take_quiz);
 
 
+
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
         scoreTextView = (TextView) findViewById(R.id.score);
         scoreTextView.setText(""+score);
@@ -54,6 +56,7 @@ public class TakeQuizActivity extends Activity {
 
         questionsArrayList = new ArrayList<>();
         answersArrayList = new ArrayList<>();
+        new LongOperation().execute("");
         try {
 
             JSONObject object = new JSONObject(loadJSONFromAsset());
@@ -244,6 +247,49 @@ public class TakeQuizActivity extends Activity {
             }
         });
 
+    }
+    private class LongOperation extends AsyncTask<String, Void, String> {
+
+        Handler h;
+        int DELAY = 3000;
+        @Override
+        protected String doInBackground(String... params) {
+
+
+
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                    intent.putExtra("Score", score);
+//                    intent.putExtra("TotalQuestions", totalNoOfQuestions);
+//                    startActivity(intent);
+
+                }
+            }, DELAY);
+
+
+
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("Score", score);
+            intent.putExtra("TotalQuestions", totalNoOfQuestions);
+            startActivity(intent);
+            // might want to change "executed" for the returned string passed
+            // into onPostExecute() but that is upto you
+        }
+
+        @Override
+        protected void onPreExecute() {
+            h = new Handler();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
     public String loadJSONFromAsset() {
         String json = null;
