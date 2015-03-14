@@ -12,7 +12,17 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -41,12 +51,36 @@ public class PendingListFragment extends Fragment {
         pendingListView = (RecyclerView)v.findViewById(R.id.pendingListView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         pendingListView.setLayoutManager(layoutManager);
-        Adapter adapter = new Adapter();
-        pendingListView.setAdapter(adapter);
+
+        final ArrayList<String> completed = new ArrayList<>();
+//        ParseUser.getCurrentUser().put("Pending", pending);
+//        ParseUser.getCurrentUser().saveInBackground();
+//        final ArrayList<String> pending2 = (ArrayList<String>)ParseUser.getCurrentUser().get("Pending");
+        ParseQuery<ParseObject> parseQuery = new ParseQuery<ParseObject>("Assignment");
+        final ArrayList<ParseObject> newList = new ArrayList<>();
+        parseQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                for(int i = 0; i < parseObjects.size(); i++){
+                    if(!completed.contains(parseObjects.get(i).getString("Name"))){
+                        newList.add(parseObjects.get(i));
+                    }
+                    Adapter adapter = new Adapter(newList);
+                    pendingListView.setAdapter(adapter);
+                }
+            }
+        });
+
         return v;
     }
 
     public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements View.OnClickListener{
+
+        ArrayList<ParseObject> parseObjects;
+
+        public Adapter(ArrayList<ParseObject> parseObjects){
+            this.parseObjects = parseObjects;
+        }
 
         @Override
         public Adapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -57,15 +91,16 @@ public class PendingListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(Adapter.ViewHolder holder, int position) {
-            holder.name.setText("Name" + position);
-            holder.subject.setText("Subject" + position);
-            holder.time.setText("Time" + position);
-            holder.number.setText("Number" + position);
+
+            holder.name.setText(parseObjects.get(position).getString("Name"));
+            holder.subject.setText(parseObjects.get(position).getString("Subject"));
+            holder.time.setText(parseObjects.get(position).getString("Time"));
+            holder.number.setText(parseObjects.get(position).getString("Number"));
         }
 
         @Override
         public int getItemCount() {
-            return 3;
+            return parseObjects.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder{
