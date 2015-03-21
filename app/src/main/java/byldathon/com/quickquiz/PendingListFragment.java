@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
@@ -45,6 +46,7 @@ public class PendingListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_pending_list, container, false);
+        final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.progress_bar);
         pendingListView = (RecyclerView)v.findViewById(R.id.pendingListView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         pendingListView.setLayoutManager(layoutManager);
@@ -62,6 +64,7 @@ public class PendingListFragment extends Fragment {
                     if(!completed.contains(parseObjects.get(i).getString("Name"))){
                         newList.add(parseObjects.get(i));
                     }
+                    progressBar.setVisibility(View.GONE);
                     Adapter adapter = new Adapter(newList);
                     pendingListView.setAdapter(adapter);
                 }

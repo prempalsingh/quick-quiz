@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.parse.ParseException;
@@ -30,7 +31,11 @@ public class SignUpFirstFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View rootView = inflater.inflate(R.layout.fragment_sign_up_first, container, false);
+
+        final ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
+
         final EditText username = (EditText) rootView.findViewById(R.id.emailID);
         final EditText password = (EditText) rootView.findViewById(R.id.password);
         final Button signup = (Button) rootView.findViewById(R.id.sign_up);
@@ -38,6 +43,7 @@ public class SignUpFirstFragment extends Fragment {
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 ParseUser user = ParseUser.getCurrentUser();
 
                 user.setUsername(username.getText().toString());
@@ -50,6 +56,7 @@ public class SignUpFirstFragment extends Fragment {
                             ParsePush.subscribeInBackground(channel.getText().toString(), new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
+                                    progressBar.setVisibility(View.GONE);
                                     Intent i = new Intent(getActivity(), MainActivity.class);
                                     startActivity(i);
                                 }

@@ -10,6 +10,7 @@
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/emailID"
+        android:hint="email ID"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="115dp" />
@@ -18,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
+        android:hint="password"
         android:ems="10"
         android:id="@+id/password"
         android:layout_centerVertical="true"
@@ -29,17 +31,19 @@
         android:layout_height="wrap_content"
         android:text="Sign in"
         android:id="@+id/sign_in"
+
         android:layout_below="@+id/password"
-        android:layout_alignLeft="@+id/password"
-        android:layout_alignStart="@+id/password"
-        android:layout_marginTop="65dp" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="Create New Account"
         android:id="@+id/signup"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/password"
-        android:layout_alignEnd="@+id/password" />
+        android:layout_below="@id/sign_in"
+        android:layout_centerInParent="true"
+        android:paddingTop="20dp"
+        />
+
+
 </RelativeLayout>
